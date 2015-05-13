@@ -53,11 +53,26 @@
     __weak typeof(self) this = self;
     [self.cityLocation locationForCityInfo:^(CityLocationStatus status, CityInfo *cityInfo) {
         NSLog(@"status--->>%ld",(long)status);
+        if (status == CityLocationForIng) {
+            NSLog(@"定位中");
+        } else if (status == CityLocationForFailForNoPermission) {
+            NSLog(@"暂无地理位置权限，请检查");
+        } else if (status == CityLocationForSuccussWithoutCityInfo) {
+            NSLog(@"定位成功，但是不在当且城市列表");
+        } else if (status == CityLocationForFailForNoNet) {
+            NSLog(@"定位成功，但是请求失败");
+        } else if (status == CityLocationForSuccussWithCityInfo) {
+            NSLog(@"定位成功");
+        } else if (status == CityLocationForFailForGps) {
+            NSLog(@"定位失败，但是请求失败");
+        }
+
         if (status != this.cityLocationStatus) {
-            this.cityLocationStatus = status;
             this.cityInfo = cityInfo;
+            this.cityLocationStatus = status;
             [this.tableList reloadData];
         }
+        
     }];
 }
 
@@ -118,6 +133,8 @@
             cell.textLabel.text = @"请打开地理位置权限";
         } else if (self.cityLocationStatus == CityLocationForFailForNoNet) {
             cell.textLabel.text = @"定位失败，请重试";
+        } else if (self.cityLocationStatus == CityLocationForFailForGps) {
+            cell.textLabel.text = @"定位失败，请重试";
         }
     } else {
         NSArray *cityArr = [self.cityInfoDic objectForKey:[self.sectionTitlesArr objectAtIndex:indexPath.section-1]];
@@ -133,15 +150,13 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    self.cityLocationStatus = CityLocationForIng;
-    [tableView reloadData];
-    [self.cityLocation restartLocation];
+    if (indexPath.section == 0) {
+        [self.cityLocation restartLocation];
 
-//    if (indexPath.section == 0) {
 //        if (self.cityLocationStatus != CityLocationForSuccussWithCityInfo) {
 //            [self.cityLocation restartLocation];
 //        }
-//    }
+    }
 }
 
 #pragma mark - get method

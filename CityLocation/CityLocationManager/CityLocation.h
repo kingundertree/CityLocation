@@ -15,7 +15,9 @@ typedef NS_ENUM(NSInteger, CityLocationStatus) {
     CityLocationForSuccussWithoutCityInfo = 1, //定位成功但不在当前city列表
     CityLocationForIng = 2, //定位中
     CityLocationForFailForNoPermission = 3, //定位失败，无权限
-    CityLocationForFailForNoNet = 4 //定位失败，网络错误
+    CityLocationForFailForNoNet = 4, //定位查询位置是啊比
+    CityLocationForFailForGps = 5 //定位失败
+
 };
 
 @interface CityLocation : NSObject

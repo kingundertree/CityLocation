@@ -42,18 +42,30 @@
     if ([CLLocationManager isLocationServiceEnabled]) {
         [self.locationManager stopUpdatingLocation];
         [self.locationManager startUpdatingLocation];
+    } else {
+        if (self.locationBlock) {
+            self.locationBlock(CityLocationForFailForNoPermission,nil);
+        }
     }
 }
 
 - (void)startLocation {
     if ([CLLocationManager isLocationServiceEnabled]) {
         [self.locationManager startUpdatingLocation];
+    } else {
+        if (self.locationBlock) {
+            self.locationBlock(CityLocationForFailForNoPermission,nil);
+        }
     }
 }
 
 - (void)stopLocation {
     if ([CLLocationManager isLocationServiceEnabled]) {
         [self.locationManager stopUpdatingLocation];
+    } else {
+        if (self.locationBlock) {
+            self.locationBlock(CityLocationForFailForNoPermission,nil);
+        }
     }
 }
 
@@ -81,8 +93,14 @@
 - (void)analyzeCityInfo:(NSString *)cityName {
     CityInfo *cityInfo = [[CityLocationManager shareInstance] getCityInfoByCityName:cityName];
 
-    if (self.locationBlock) {
-        self.locationBlock(CityLocationForSuccussWithCityInfo, cityInfo);
+    if (cityInfo) {
+        if (self.locationBlock) {
+            self.locationBlock(CityLocationForSuccussWithCityInfo, cityInfo);
+        }
+    } else {
+        if (self.locationBlock) {
+            self.locationBlock(CityLocationForSuccussWithoutCityInfo, cityInfo);
+        }
     }
 }
 
@@ -94,7 +112,7 @@
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
     if (self.locationBlock) {
-        self.locationBlock(CityLocationForFailForNoNet,nil);
+        self.locationBlock(CityLocationForFailForGps,nil);
     }
 }
 
